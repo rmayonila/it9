@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Transferee;
+use Illuminate\Http\Request;
+
+class TransfereeController extends Controller
+{
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:transferees,email',
+            'contact_number' => 'required|string|max:20',
+            'previous_school' => 'required|string|max:255',
+            'program' => 'required|string|in:STEM,HUMSS,ABM,TVL',
+            'academic_year' => 'required|string|in:2025-2026,2026-2027',
+            'additional_info' => 'nullable|string'
+        ]);
+
+        try {
+            Transferee::create($validated);
+            return redirect()->back()->with('success', 'Application submitted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong. Please try again.');
+        }
+    }
+}
