@@ -2,52 +2,34 @@
 
 use App\Http\Controllers\OldStudentController;
 use App\Http\Controllers\TransfereeController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/transferee', function () {
-    return view('transferee');
-});
+// Transferee routes
+Route::get('/transferee', [TransfereeController::class, 'index'])->name('transferee.index');
+Route::post('/transferee', [TransfereeController::class, 'store'])->name('transferee.store');
 
-Route::post('/submit-transferee', [TransfereeController::class, 'submit']);
+// Student Verification Routes
+Route::get('/verify', [OldStudentController::class, 'verifyForm'])->name('verify.form');
+Route::post('/verify', [OldStudentController::class, 'verifyStudent'])->name('verify');
+Route::get('/old-student', [OldStudentController::class, 'showRegistrationForm'])->name('old-student');
 
-
-Route::get('/old-student', function () {
-    return view('old-student');
-});
-
-Route::post('/old-student-login', [OldStudentController::class, 'login']);
-
-
-Route::post('/submit-transferee', [TransfereeController::class, 'store']);
-
-
+// Protected routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [OldStudentController::class, 'dashboard'])->name('dashboard');
-    Route::post('/logout', [OldStudentController::class, 'logout'])->name('logout');
+    Route::get('/admin/dashboard', [OldStudentController::class, 'dashboard'])->name('admin.dashboard');
+    Route::post('/logout', [OldStudentController::class, 'admin.logout'])->name('admin.logout');
 });
 
-// Add this with your other routes
+// Admin Authentication Routes
+Route::get('/admin', [AdminController::class, 'login'])->name('admin.login');
 Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login');
+Route::get('/admin/register', [AdminController::class, 'register'])->name('admin.register');
+Route::post('/admin/register', [AdminController::class, 'register'])->name('admin.register');
 
-// ..
-
-Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login');
 Route::middleware(['auth:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');

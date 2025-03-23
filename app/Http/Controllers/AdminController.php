@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin;
 use App\Models\Student;
 use App\Models\Transferee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
+    public function loginForm()
+    {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.dashboard');
+        }
+        return view('admin.login');
+    }
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -20,24 +26,30 @@ class AdminController extends Controller
 
         if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/admin/dashboard');
+            return redirect()->route('admin.dashboard');
         }
 
         return back()->withErrors([
-            'username' => 'Invalid credentials',
+            'username' => 'Invalid credentials'
         ]);
     }
 
     public function dashboard()
     {
+        if (!Auth::guard('admin')->check()) {
+            return redirect()->route('admin.login');
+        }
+
         $stats = [
-            'total_students' => Student::count(),
-            'new_applications' => Transferee::where('created_at', '>=', now()->subDays(7))->count(),
-            'active_courses' => 24, // Replace with actual course count
-            'faculty_members' => 89, // Replace with actual faculty count
+            'total_students' => Student::count() ?? 0,
+            'new_applications' => Transferee::where('created_at', '>=', now()->subDays(7))->count() ?? 0,
+            'active_courses' => 4,
+            'faculty_members' => 89
         ];
 
-        return view('admin.dashboard', compact('stats'));
+        $recent_applications = Transferee::latest()->take(5)->get();
+
+        return view('admin.dashboard', compact('stats', 'recent_applications'));
     }
 
     public function logout(Request $request)
@@ -47,4 +59,10 @@ class AdminController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
+    protected $fillable = [
+        'name',
+        'username',
+        'email',
+        'password',
+    ];
 }

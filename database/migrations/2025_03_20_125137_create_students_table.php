@@ -1,6 +1,6 @@
-
-students_table.php
 <?php
+
+namespace Database\Migrations;
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -13,9 +13,8 @@ return new class extends Migration
         Schema::create('students', function (Blueprint $table) {
             $table->id();
             $table->string('student_id')->unique();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
+            $table->string('full_name');
+            $table->string('email');
             $table->string('course');
             $table->integer('year_level');
             $table->timestamps();

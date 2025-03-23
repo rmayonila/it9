@@ -680,16 +680,8 @@
                 <p>STEM</p>
             </div>
             <div class="strand">
-                <img src="{{ asset('img/logo.png') }}" alt="HUMSS">
-                <p>HUMSS</p>
-            </div>
-            <div class="strand">
                 <img src="{{ asset('img/logo.png') }}" alt="ABM">
                 <p>ABM</p>
-            </div>
-            <div class="strand">
-                <img src="{{ asset('img/logo.png') }}" alt="TVL">
-                <p>TVL</p>
             </div>
         </div>
     </div>

@@ -2,24 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
 
-class Student extends Authenticatable
+class Student extends Model
 {
-    use Notifiable;
-
     protected $fillable = [
         'student_id',
-        'name',
+        'full_name',
         'email',
-        'password',
         'course',
-        'year_level',
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
+        'year_level'
     ];
 }

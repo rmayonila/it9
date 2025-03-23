@@ -4,41 +4,42 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class OldStudentController extends Controller
 {
-    public function login(Request $request)
+    public function verifyForm()
     {
-        $credentials = $request->validate([
-            'student_id' => 'required|string',
-            'password' => 'required|string',
+        return view('verify');
+    }
+
+    public function verifyStudent(Request $request)
+    {
+        $request->validate([
+            'student_id' => 'required|string|min:5'
         ]);
 
-        $student = Student::where('student_id', $credentials['student_id'])->first();
+        $student = Student::where('student_id', $request->student_id)->first();
 
-        if (!$student || !Hash::check($credentials['password'], $student->password)) {
-            return back()->withErrors([
-                'student_id' => 'The provided credentials do not match our records.',
+        if ($student) {
+            Session::put('verified_student_id', $student->student_id);
+            Session::put('student_data', $student);
+            return response()->json([
+                'found' => true,
+                'student' => $student
             ]);
         }
 
-        Auth::login($student);
-        return redirect('/dashboard')->with('success', 'Welcome back, ' . $student->name . '!');
+        return response()->json(['found' => false]);
     }
 
-    public function dashboard()
+    public function showRegistrationForm()
     {
-        $student = Auth::user();
-        return view('student.dashboard', compact('student'));
-    }
+        if (!Session::has('verified_student_id')) {
+            return redirect()->route('verify');
+        }
 
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/');
+        $student = Session::get('student_data');
+        return view('old-student', compact('student'));
     }
 }
