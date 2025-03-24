@@ -199,7 +199,7 @@ input[type="file"]:hover {
             </div>
         @endif
         
-        <form action="{{ route('transferee.store') }}" method="POST">
+        <form action="{{ route('transferee.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label>Full Name <span class="required">*</span></label>
@@ -242,7 +242,6 @@ input[type="file"]:hover {
 
             <div class="form-group">
                 <label>Additional Information</label>
-               
             </div>
             <div class="form-section">
     <h3>Required Documents</h3>
@@ -264,7 +263,7 @@ input[type="file"]:hover {
         <small class="file-help">Accepted formats: PDF, JPG, PNG (Max: 2MB)</small>
     </div>
 </div>
-            <button type="submit" class="btn">Submit Application</button>
+        <button type="submit" class="btn">Submit Application</button>
         </form>
         <a href="/" class="back-link">← Back to Home</a>
     </div>

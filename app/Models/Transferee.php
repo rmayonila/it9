@@ -13,6 +13,8 @@ class Transferee extends Model
         'previous_school',
         'program',
         'academic_year',
-        'additional_info'
+        'report_card_path',
+        'good_moral_path',
+        'birth_certificate_path',
     ];
 }

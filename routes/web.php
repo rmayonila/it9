@@ -4,6 +4,8 @@ use App\Http\Controllers\OldStudentController;
 use App\Http\Controllers\TransfereeController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\StudentsController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,6 +33,17 @@ Route::get('/admin/register', [AdminController::class, 'register'])->name('admin
 Route::post('/admin/register', [AdminController::class, 'register'])->name('admin.register');
 
 Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/students', [StudentsController::class, 'index'])->name('admin.students');
+    Route::get('/admin/transferees', [TransfereesController::class, 'index'])->name('admin.transferees.index');
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 });
+
+
+Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
+    Route::get('/students', [StudentsController::class, 'index'])->name('admin.students.index');
+    Route::get('/students/{id}/edit', [StudentsController::class, 'edit'])->name('admin.students.edit');
+    Route::put('/students/{id}', [StudentsController::class, 'update'])->name('admin.students.update');
+    Route::delete('/students/{id}', [StudentsController::class, 'destroy'])->name('admin.students.delete');
+});
+

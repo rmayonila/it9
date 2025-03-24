@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - University M.</title>
+    <title>Students Management - University M.</title>
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -105,85 +105,139 @@
             font-weight: 600;
             color: #666;
         }
+
+        .students-table {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .edit-btn {
+            background: #2196f3;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .status-active {
+            color: #4caf50;
+            font-weight: 600;
+        }
+
+        .status-inactive {
+            color: #f44336;
+            font-weight: 600;
+        }
+
+        .pagination {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+       
+        .students-table {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 2rem;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-    <h2>Admin Panel</h2>
-    <nav>
-        <a href="{{ route('admin.dashboard') }}" class="nav-link">
-            <i class="fas fa-tachometer-alt"></i> Dashboard
-        </a>
-        <a href="{{ route('admin.students.index') }}" class="nav-link">
-    <i class="fas fa-user-graduate"></i> Old Students
-</a>
-        <a href="#" class="nav-link">
-            <i class="fas fa-users"></i> Transferees
-        </a>
-        <a href="#" class="nav-link">
-            <i class="fas fa-book"></i> Programs
-        </a>
-        <a href="#" class="nav-link">
-            <i class="fas fa-cog"></i> Settings
-        </a>
-    </nav>
-</div>
+        <h2>Admin Panel</h2>
+        <nav>
+            <a href="{{ route('admin.dashboard') }}" class="nav-link">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="{{ route('admin.students.index') }}" class="nav-link active">
+                <i class="fas fa-user-graduate"></i> Old Students
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-users"></i> Transferees
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-book"></i> Programs
+            </a>
+            <a href="#" class="nav-link">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+        </nav>
+    </div>
 
     <div class="main-content">
         <div class="header">
-            <h1>Welcome, {{ Auth::guard('admin')->user()->username }}</h1>
+            <h1>Students Management</h1>
             <form action="{{ route('admin.logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="logout-btn">Logout</button>
             </form>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>Total Students</h3>
-                <p>{{ $stats['total_students'] ?? 0 }}</p>
-            </div>
-            <div class="stat-card">
-                <h3>New Applications</h3>
-                <p>{{ $stats['new_applications'] ?? 0 }}</p>
-            </div>
-            <div class="stat-card">
-                <h3>Active Programs</h3>
-                <p>{{ $stats['active_programs'] ?? 2 }}</p>
-            </div>
-            <div class="stat-card">
-                <h3>Faculty Members</h3>
-                <p>{{ $stats['faculty_members'] ?? 89 }}</p>
-            </div>
-        </div>
-
-        <div class="recent-applications">
-            <h2>Recent Applications</h2>
+        <div class="students-table">
             <table>
                 <thead>
                     <tr>
+                        <th>Student ID</th>
                         <th>Name</th>
+                        <th>Email</th>
                         <th>Program</th>
-                        <th>Date Applied</th>
-                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($recent_applications ?? [] as $application)
+                    @forelse($students as $student)
                     <tr>
-                        <td>{{ $application->full_name }}</td>
-                        <td>{{ $application->program }}</td>
-                        <td>{{ $application->created_at->format('M d, Y') }}</td>
-                        <td>Pending</td>
+                        <td>{{ $student->student_id }}</td>
+                        <td>{{ $student->full_name }}</td>
+                        <td>{{ $student->email }}</td>
+                        <td>{{ $student->program }}</td>
+                        <td>
+                            <button class="action-btn">View</button>
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="text-center">No recent applications</td>
+                        <td colspan="5" class="text-center">No students found</td>
                     </tr>
                     @endforelse
                 </tbody>
             </table>
+            
+            <div class="pagination">
+                {{ $students->links() }}
+            </div>
         </div>
     </div>
 </body>
-</html>	
+</html>

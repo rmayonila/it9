@@ -17,6 +17,9 @@ return new class extends Migration
             $table->string('program');
             $table->string('academic_year');
             $table->text('additional_info')->nullable();
+            $table->string('report_card_path')->nullable();
+            $table->string('good_moral_path')->nullable();
+            $table->string('birth_certificate_path')->nullable(); // Changed from Birth_certificate_path
             $table->timestamps();
         });
     }
